@@ -1,0 +1,27 @@
+# permissions for end users to edit nodes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: pf-status-relay-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: nodes-editor-role
+rules:
+- apiGroups:
+  - pfstatusrelay.openshift.io
+  resources:
+  - nodes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pfstatusrelay.openshift.io
+  resources:
+  - nodes/status
+  verbs:
+  - get

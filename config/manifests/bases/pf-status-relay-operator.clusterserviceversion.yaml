@@ -1,0 +1,49 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: pf-status-relay-operator.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: PFLACPMonitor is the Schema for the pflacpmonitors API
+      displayName: PFLACPMonitor
+      kind: PFLACPMonitor
+      name: pflacpmonitors.pfstatusrelay.openshift.io
+      version: v1alpha1
+  description: It deploys the pf-status-relay application.
+  displayName: pf-status-relay-operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - pf-status-relay
+  - sriov
+  - lacp
+  links:
+  - name: Pf Status Relay Operator
+    url: https://pf-status-relay-operator.domain
+  maintainers:
+  - email: marguerr@redhat.com
+    name: Marcelo Guerrero
+  maturity: alpha
+  provider:
+    name: openshift
+  version: 0.0.0

@@ -1,0 +1,23 @@
+# permissions for end users to view pflacpmonitors.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: pf-status-relay-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: pflacpmonitor-viewer-role
+rules:
+- apiGroups:
+  - pfstatusrelay.openshift.io
+  resources:
+  - pflacpmonitors
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - pfstatusrelay.openshift.io
+  resources:
+  - pflacpmonitors/status
+  verbs:
+  - get
