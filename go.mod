@@ -3,7 +3,7 @@ module github.com/mlguerrero12/pf-status-relay-operator
 go 1.22.0
 
 require (
-	github.com/onsi/ginkgo/v2 v2.20.1
+	github.com/onsi/ginkgo/v2 v2.20.2
 	github.com/onsi/gomega v1.34.2
 	k8s.io/api v0.29.2
 	k8s.io/apimachinery v0.29.2
