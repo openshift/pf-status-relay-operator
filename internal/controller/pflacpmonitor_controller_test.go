@@ -31,7 +31,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	pfstatusrelayv1alpha1 "github.com/mlguerrero12/pf-status-relay-operator/api/v1alpha1"
+	pfstatusrelayv1alpha1 "github.com/openshift/pf-status-relay-operator/api/v1alpha1"
 )
 
 var _ = Describe("PFLACPMonitor Controller", func() {

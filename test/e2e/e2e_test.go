@@ -24,7 +24,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/mlguerrero12/pf-status-relay-operator/test/utils"
+	"github.com/openshift/pf-status-relay-operator/test/utils"
 )
 
 const namespace = "pf-status-relay-operator-system"

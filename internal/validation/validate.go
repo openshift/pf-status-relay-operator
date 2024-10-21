@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/mlguerrero12/pf-status-relay-operator/api/v1alpha1"
+	"github.com/openshift/pf-status-relay-operator/api/v1alpha1"
 )
 
 // InterfaceUniqueness validates that interfaces do not overlap for daemon sets that share nodes.

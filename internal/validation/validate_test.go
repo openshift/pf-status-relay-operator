@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/mlguerrero12/pf-status-relay-operator/api/v1alpha1"
+	"github.com/openshift/pf-status-relay-operator/api/v1alpha1"
 )
 
 var _ = Describe("Validator", func() {

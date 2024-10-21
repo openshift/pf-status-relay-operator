@@ -32,9 +32,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	pfstatusrelayv1alpha1 "github.com/mlguerrero12/pf-status-relay-operator/api/v1alpha1"
-	"github.com/mlguerrero12/pf-status-relay-operator/internal/log"
-	"github.com/mlguerrero12/pf-status-relay-operator/internal/validation"
+	pfstatusrelayv1alpha1 "github.com/openshift/pf-status-relay-operator/api/v1alpha1"
+	"github.com/openshift/pf-status-relay-operator/internal/log"
+	"github.com/openshift/pf-status-relay-operator/internal/validation"
 )
 
 // PFLACPMonitorReconciler reconciles a PFLACPMonitor object

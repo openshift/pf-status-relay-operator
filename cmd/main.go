@@ -38,8 +38,8 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	pfstatusrelayv1alpha1 "github.com/mlguerrero12/pf-status-relay-operator/api/v1alpha1"
-	"github.com/mlguerrero12/pf-status-relay-operator/internal/controller"
+	pfstatusrelayv1alpha1 "github.com/openshift/pf-status-relay-operator/api/v1alpha1"
+	"github.com/openshift/pf-status-relay-operator/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
 

@@ -34,7 +34,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	pfstatusrelayv1alpha1 "github.com/mlguerrero12/pf-status-relay-operator/api/v1alpha1"
+	pfstatusrelayv1alpha1 "github.com/openshift/pf-status-relay-operator/api/v1alpha1"
 	// +kubebuilder:scaffold:imports
 )
 
