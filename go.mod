@@ -1,4 +1,4 @@
-module github.com/mlguerrero12/pf-status-relay-operator
+module github.com/openshift/pf-status-relay-operator
 
 go 1.22.0
 

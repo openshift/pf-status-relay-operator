@@ -18,7 +18,7 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2024-10-09T16:35:29Z"
+    createdAt: "2024-10-21T09:33:56Z"
     operators.operatorframework.io/builder: operator-sdk-v1.37.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v4
   name: pf-status-relay-operator.v0.0.1
@@ -126,12 +126,12 @@ spec:
                 - /manager
                 env:
                 - name: PF_STATUS_RELAY_IMAGE
-                  value: quay.io/marguerr/pf-status-relay:latest
+                  value: quay.io/openshift/origin-pf-status-relay:latest
                 - name: WATCH_NAMESPACE
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['olm.targetNamespaces']
-                image: quay.io/marguerr/pf-status-operator:latest
+                image: quay.io/openshift/pf-status-relay-operator:latest
                 livenessProbe:
                   httpGet:
                     path: /healthz
