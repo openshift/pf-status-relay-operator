@@ -12,7 +12,7 @@ spec:
       clientConfig:
         service:
           name: pf-status-relay-operator-webhook-service
-          namespace: pf-status-relay-operator-system
+          namespace: openshift-pf-status-relay-operator
           path: /convert
       conversionReviewVersions:
       - v1
