@@ -57,7 +57,7 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 
 		BeforeEach(func() {
 			By("creating the custom resource for the Kind PFLACPMonitor")
-			dsName = fmt.Sprintf("pf-status-relay-daemonset-%s", typeNamespacedName.Name)
+			dsName = fmt.Sprintf("%s-ds-%s", namePrefix, typeNamespacedName.Name)
 			envVars = []corev1.EnvVar{
 				{
 					Name:  "PF_STATUS_RELAY_INTERFACES",
@@ -150,6 +150,7 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 			It("should modify Degraded status appropriately", func() {
 				newName := "new-monitor"
 				namespace := "default"
+				dsName := fmt.Sprintf("%s-ds-%s", namePrefix, newName)
 
 				By("creating a new PFLACPMonitor resource")
 				newPFLACPMonitor := &pfstatusrelayv1alpha1.PFLACPMonitor{
@@ -167,7 +168,7 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 
 				ds = &appsv1.DaemonSet{}
 				Eventually(func() error {
-					err := k8sClient.Get(ctx, types.NamespacedName{Name: fmt.Sprintf("pf-status-relay-daemonset-%s", newName), Namespace: namespace}, ds)
+					err := k8sClient.Get(ctx, types.NamespacedName{Name: dsName, Namespace: namespace}, ds)
 					return err
 				}, timeout, interval).Should(Succeed())
 
@@ -191,14 +192,14 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 
 				ds = &appsv1.DaemonSet{}
 				Eventually(func() error {
-					err := k8sClient.Get(ctx, types.NamespacedName{Name: fmt.Sprintf("pf-status-relay-daemonset-%s", newName), Namespace: namespace}, ds)
+					err := k8sClient.Get(ctx, types.NamespacedName{Name: dsName, Namespace: namespace}, ds)
 					return err
 				}, timeout, interval).ShouldNot(Succeed())
 
 				By("Updating the new PFLACPMonitor resource with different interfaces")
 				Eventually(func() error {
 					monitor := &pfstatusrelayv1alpha1.PFLACPMonitor{}
-					err := k8sClient.Get(ctx, types.NamespacedName{Name: "new-monitor", Namespace: "default"}, monitor)
+					err := k8sClient.Get(ctx, types.NamespacedName{Name: newName, Namespace: namespace}, monitor)
 					Expect(err).NotTo(HaveOccurred())
 
 					monitor.Spec.Interfaces = []string{"eth1"}
@@ -208,7 +209,7 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 				By("Verifying degraded state is set to false")
 				Eventually(func() bool {
 					monitor := &pfstatusrelayv1alpha1.PFLACPMonitor{}
-					err := k8sClient.Get(ctx, types.NamespacedName{Name: "new-monitor", Namespace: "default"}, monitor)
+					err := k8sClient.Get(ctx, types.NamespacedName{Name: newName, Namespace: namespace}, monitor)
 					Expect(err).NotTo(HaveOccurred())
 
 					return reflect.DeepEqual(monitor.Status.Degraded, false)
@@ -216,7 +217,7 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 
 				ds = &appsv1.DaemonSet{}
 				Eventually(func() error {
-					err := k8sClient.Get(ctx, types.NamespacedName{Name: fmt.Sprintf("pf-status-relay-daemonset-%s", "new-monitor"), Namespace: "default"}, ds)
+					err := k8sClient.Get(ctx, types.NamespacedName{Name: dsName, Namespace: namespace}, ds)
 					return err
 				}, timeout, interval).Should(Succeed())
 			})
