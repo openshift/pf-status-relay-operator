@@ -37,6 +37,12 @@ import (
 	"github.com/openshift/pf-status-relay-operator/internal/validation"
 )
 
+const (
+	pfStatusRelaySAName = "pf-status-relay-operator-pf-status-relay"
+
+	namePrefix = "pf-status-relay"
+)
+
 // PFLACPMonitorReconciler reconciles a PFLACPMonitor object
 type PFLACPMonitorReconciler struct {
 	client.Client
@@ -120,7 +126,7 @@ func (r *PFLACPMonitorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 func (r *PFLACPMonitorReconciler) syncDaemonSet(ctx context.Context, pfMonitor *pfstatusrelayv1alpha1.PFLACPMonitor) error {
 	log.Log.Info("syncing daemonset", "name", pfMonitor.Name, "namespace", pfMonitor.Namespace)
 
-	name := fmt.Sprintf("pf-status-relay-daemonset-%s", pfMonitor.Name)
+	name := fmt.Sprintf("%s-ds-%s", namePrefix, pfMonitor.Name)
 	image, err := getDaemonSetImage()
 	if err != nil {
 		return err
@@ -144,9 +150,10 @@ func (r *PFLACPMonitorReconciler) syncDaemonSet(ctx context.Context, pfMonitor *
 					},
 				},
 				Spec: corev1.PodSpec{
-					HostNetwork:  true,
-					HostPID:      true,
-					NodeSelector: pfMonitor.Spec.NodeSelector,
+					ServiceAccountName: pfStatusRelaySAName,
+					HostNetwork:        true,
+					HostPID:            true,
+					NodeSelector:       pfMonitor.Spec.NodeSelector,
 					Containers: []corev1.Container{
 						{
 							Name:  "pf-status-relay",
@@ -207,7 +214,7 @@ func (r *PFLACPMonitorReconciler) syncDaemonSet(ctx context.Context, pfMonitor *
 }
 
 func (r *PFLACPMonitorReconciler) deleteDaemonSet(ctx context.Context, pfMonitor *pfstatusrelayv1alpha1.PFLACPMonitor) error {
-	name := fmt.Sprintf("pf-status-relay-daemonset-%s", pfMonitor.Name)
+	name := fmt.Sprintf("%s-ds-%s", namePrefix, pfMonitor.Name)
 	ds := &appsv1.DaemonSet{}
 	err := r.Get(ctx, types.NamespacedName{Name: name, Namespace: pfMonitor.Namespace}, ds)
 	if err != nil {
