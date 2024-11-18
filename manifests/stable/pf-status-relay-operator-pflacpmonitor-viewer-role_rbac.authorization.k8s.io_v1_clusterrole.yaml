@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: pf-status-relay-operator
+  name: pf-status-relay-operator-pflacpmonitor-viewer-role
+rules:
+- apiGroups:
+  - pfstatusrelay.openshift.io
+  resources:
+  - pflacpmonitors
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - pfstatusrelay.openshift.io
+  resources:
+  - pflacpmonitors/status
+  verbs:
+  - get

@@ -1,0 +1,4 @@
+packageName: pf-status-relay-operator
+channels:
+  - name: "stable"
+    currentCSV: pf-status-relay-operator.v4.18.0

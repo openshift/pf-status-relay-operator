@@ -1,0 +1,13 @@
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+spec:
+  tags:
+  - name: pf-status-relay-operator
+    from:
+      kind: DockerImage
+      name: quay.io/openshift/origin-pf-status-relay-operator:latest
+  - name: pf-status-relay
+    from:
+      kind: DockerImage
+      name: quay.io/openshift/origin-pf-status-relay:latest

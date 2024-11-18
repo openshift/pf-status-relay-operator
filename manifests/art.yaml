@@ -1,0 +1,14 @@
+updates:
+  - file: "stable/pf-status-relay-operator.clusterserviceversion.yaml" # relative to this file
+    update_list:
+      # replace metadata.name value
+      - search: "pf-status-relay-operator.v{MAJOR}.{MINOR}.0"
+        replace: "pf-status-relay-operator.v{FULL_VER}"
+      - search: "version: {MAJOR}.{MINOR}.0"
+        replace: "version: {FULL_VER}"
+      - search: "olm.skipRange: '>=4.3.0-0 <{MAJOR}.{MINOR}.0'"
+        replace: "olm.skipRange: '>=4.3.0-0 <{FULL_VER}'"
+  - file: "pf-status-relay-operator.package.yaml"
+    update_list:
+      - search: "currentCSV: pf-status-relay-operator.v{MAJOR}.{MINOR}.0"
+        replace: "currentCSV: pf-status-relay-operator.{FULL_VER}"
