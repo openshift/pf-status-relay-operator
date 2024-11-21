@@ -18,10 +18,10 @@ metadata:
         }
       ]
     capabilities: Basic Install
-    createdAt: "2024-10-31T16:14:38Z"
+    createdAt: "2024-11-21T11:26:00Z"
     operators.operatorframework.io/builder: operator-sdk-v1.37.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v4
-  name: pf-status-relay-operator.v0.0.1
+  name: pf-status-relay-operator.v4.18.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -126,12 +126,12 @@ spec:
                 - /manager
                 env:
                 - name: PF_STATUS_RELAY_IMAGE
-                  value: quay.io/openshift/origin-pf-status-relay:latest
+                  value: quay.io/openshift/origin-pf-status-relay:4.18.0
                 - name: WATCH_NAMESPACE
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['olm.targetNamespaces']
-                image: quay.io/openshift/origin-pf-status-relay-operator:latest
+                image: quay.io/openshift/origin-pf-status-relay-operator:4.18.0
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -254,7 +254,7 @@ spec:
   maturity: alpha
   provider:
     name: openshift
-  version: 0.0.1
+  version: 4.18.0
   webhookdefinitions:
   - admissionReviewVersions:
     - v1
