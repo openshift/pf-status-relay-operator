@@ -50,7 +50,7 @@ endif
 # This is useful for CI or a project to utilize a specific version of the operator-sdk toolkit.
 OPERATOR_SDK_VERSION ?= v1.37.0
 # Image URL to use all building/pushing image targets
-IMG ?= quay.io/openshift/origin-pf-status-relay-operator:latest
+IMG ?= quay.io/openshift/origin-pf-status-relay-operator:$(VERSION)
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.29.0
 
@@ -320,3 +320,7 @@ catalog-build: opm ## Build a catalog image.
 .PHONY: catalog-push
 catalog-push: ## Push a catalog image.
 	$(MAKE) docker-push IMG=$(CATALOG_IMG)
+
+.PHONY: align-ocp-version
+align-ocp-version: ## Align the OCP version in bundle, manifests and bundle.Dockerfile
+	hack/align-ocp-version.sh
