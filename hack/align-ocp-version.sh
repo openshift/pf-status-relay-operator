@@ -1,6 +1,6 @@
 set -e
 
-export VERSION="4.19.0"
+export VERSION="4.20.0"
 
 sed -i 's/quay.io\/openshift\/origin-pf-status-relay:.*$/quay.io\/openshift\/origin-pf-status-relay:'$VERSION'/g' config/manager/env_patch.yaml
 sed -i 's/quay.io\/openshift\/origin-kube-rbac-proxy:.*$/quay.io\/openshift\/origin-kube-rbac-proxy:'$VERSION'/g' config/default/manager_auth_proxy_patch.yaml
