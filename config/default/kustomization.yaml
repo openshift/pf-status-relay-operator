@@ -28,6 +28,8 @@ resources:
 - ../pf_status_relay_rbac
 
 patches:
+# Add Openshift namespace labels
+- path: namespace_patch.yaml
 # Protect the /metrics endpoint by putting it behind auth.
 # If you want your controller-manager to expose the /metrics
 # endpoint w/o any authn/z, please comment the following line.
@@ -37,10 +39,14 @@ patches:
 # crd/kustomization.yaml
 - path: manager_webhook_patch.yaml
 
+# [WEBHOOK] Add a service certificate Openshift
+- path: webhookservingcert_patch.yaml
+
 # [CERTMANAGER] To enable cert-manager, uncomment all sections with 'CERTMANAGER'.
 # Uncomment 'CERTMANAGER' sections in crd/kustomization.yaml to enable the CA injection in the admission webhooks.
 # 'CERTMANAGER' needs to be enabled to use ca injection
-#- path: webhookcainjection_patch.yaml
+# Openshift CA injection is used
+- path: webhookcainjection_patch.yaml
 
 # [CERTMANAGER] To enable cert-manager, uncomment all sections with 'CERTMANAGER' prefix.
 # Uncomment the following replacements to add the cert-manager CA injection annotations
