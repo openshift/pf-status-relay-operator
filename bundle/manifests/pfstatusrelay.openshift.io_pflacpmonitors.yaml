@@ -6,16 +6,6 @@ metadata:
   creationTimestamp: null
   name: pflacpmonitors.pfstatusrelay.openshift.io
 spec:
-  conversion:
-    strategy: Webhook
-    webhook:
-      clientConfig:
-        service:
-          name: pf-status-relay-operator-webhook-service
-          namespace: openshift-pf-status-relay-operator
-          path: /convert
-      conversionReviewVersions:
-      - v1
   group: pfstatusrelay.openshift.io
   names:
     kind: PFLACPMonitor
