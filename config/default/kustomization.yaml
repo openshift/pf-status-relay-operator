@@ -26,6 +26,7 @@ resources:
 # [PROMETHEUS] To enable prometheus monitor, uncomment all sections with 'PROMETHEUS'.
 #- ../prometheus
 - ../pf_status_relay_rbac
+- ../networkpolicies
 
 patches:
 # Add Openshift namespace labels

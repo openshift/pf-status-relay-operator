@@ -57,7 +57,7 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 
 		BeforeEach(func() {
 			By("creating the custom resource for the Kind PFLACPMonitor")
-			dsName = fmt.Sprintf("%s-ds-%s", namePrefix, typeNamespacedName.Name)
+			dsName = fmt.Sprintf("%s-ds-%s", operandName, typeNamespacedName.Name)
 			envVars = []corev1.EnvVar{
 				{
 					Name:  "PF_STATUS_RELAY_INTERFACES",
@@ -150,7 +150,7 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 			It("should modify Degraded status appropriately", func() {
 				newName := "new-monitor"
 				namespace := "default"
-				dsName := fmt.Sprintf("%s-ds-%s", namePrefix, newName)
+				dsName := fmt.Sprintf("%s-ds-%s", operandName, newName)
 
 				By("creating a new PFLACPMonitor resource")
 				newPFLACPMonitor := &pfstatusrelayv1alpha1.PFLACPMonitor{
