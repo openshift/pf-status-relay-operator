@@ -240,13 +240,13 @@ spec:
         serviceAccountName: pf-status-relay-operator-controller-manager
     strategy: deployment
   installModes:
-  - supported: false
+  - supported: true
     type: OwnNamespace
   - supported: false
     type: SingleNamespace
   - supported: false
     type: MultiNamespace
-  - supported: true
+  - supported: false
     type: AllNamespaces
   keywords:
   - pf-status-relay
@@ -264,17 +264,6 @@ spec:
     name: openshift
   version: 4.20.0
   webhookdefinitions:
-  - admissionReviewVersions:
-    - v1
-    containerPort: 443
-    conversionCRDs:
-    - pflacpmonitors.pfstatusrelay.openshift.io
-    deploymentName: pf-status-relay-operator-controller-manager
-    generateName: cpflacpmonitors.kb.io
-    sideEffects: None
-    targetPort: 9443
-    type: ConversionWebhook
-    webhookPath: /convert
   - admissionReviewVersions:
     - v1
     containerPort: 443
