@@ -34,7 +34,6 @@ import (
 
 	pfstatusrelayv1alpha1 "github.com/openshift/pf-status-relay-operator/api/v1alpha1"
 	"github.com/openshift/pf-status-relay-operator/internal/log"
-	"github.com/openshift/pf-status-relay-operator/internal/validation"
 )
 
 const (
@@ -78,7 +77,7 @@ func (r *PFLACPMonitorReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{}, err
 	}
 
-	err = validation.InterfaceUniqueness(pfMonitor, pfMonitorList)
+	err = pfstatusrelayv1alpha1.InterfaceUniqueness(pfMonitor, pfMonitorList)
 	if err != nil {
 		if pfMonitor.Status.Degraded {
 			return ctrl.Result{}, nil

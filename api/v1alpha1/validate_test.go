@@ -1,28 +1,26 @@
-package validation
+package v1alpha1
 
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"github.com/openshift/pf-status-relay-operator/api/v1alpha1"
 )
 
 var _ = Describe("Validator", func() {
 	Describe("NodeSelector", func() {
 		var (
-			pfMonitor1, pfMonitor2 *v1alpha1.PFLACPMonitor
-			pfMonitorList          *v1alpha1.PFLACPMonitorList
+			pfMonitor1, pfMonitor2 *PFLACPMonitor
+			pfMonitorList          *PFLACPMonitorList
 		)
 
 		BeforeEach(func() {
-			pfMonitor1 = &v1alpha1.PFLACPMonitor{
+			pfMonitor1 = &PFLACPMonitor{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "monitor1",
 				},
 			}
 
-			pfMonitor2 = &v1alpha1.PFLACPMonitor{
+			pfMonitor2 = &PFLACPMonitor{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: "monitor2",
 				},
@@ -36,8 +34,8 @@ var _ = Describe("Validator", func() {
 			pfMonitor2.Spec.NodeSelector = map[string]string{"key2": "value2"}
 			pfMonitor2.Spec.Interfaces = []string{"eth0"}
 
-			pfMonitorList = &v1alpha1.PFLACPMonitorList{
-				Items: []v1alpha1.PFLACPMonitor{*pfMonitor1, *pfMonitor2},
+			pfMonitorList = &PFLACPMonitorList{
+				Items: []PFLACPMonitor{*pfMonitor1, *pfMonitor2},
 			}
 
 			err := InterfaceUniqueness(pfMonitor1, pfMonitorList)
@@ -51,8 +49,8 @@ var _ = Describe("Validator", func() {
 			pfMonitor2.Spec.NodeSelector = map[string]string{"key2": "value2"}
 			pfMonitor2.Spec.Interfaces = []string{"eth2", "eth3"}
 
-			pfMonitorList = &v1alpha1.PFLACPMonitorList{
-				Items: []v1alpha1.PFLACPMonitor{*pfMonitor1, *pfMonitor2},
+			pfMonitorList = &PFLACPMonitorList{
+				Items: []PFLACPMonitor{*pfMonitor1, *pfMonitor2},
 			}
 
 			err := InterfaceUniqueness(pfMonitor1, pfMonitorList)
@@ -66,8 +64,8 @@ var _ = Describe("Validator", func() {
 			pfMonitor2.Spec.NodeSelector = map[string]string{"key2": "value2"}
 			pfMonitor2.Spec.Interfaces = []string{"eth0"}
 
-			pfMonitorList = &v1alpha1.PFLACPMonitorList{
-				Items: []v1alpha1.PFLACPMonitor{*pfMonitor1, *pfMonitor2},
+			pfMonitorList = &PFLACPMonitorList{
+				Items: []PFLACPMonitor{*pfMonitor1, *pfMonitor2},
 			}
 
 			err := InterfaceUniqueness(pfMonitor1, pfMonitorList)
@@ -81,8 +79,8 @@ var _ = Describe("Validator", func() {
 			pfMonitor2.Spec.NodeSelector = map[string]string{"key2": "value2"}
 			pfMonitor2.Spec.Interfaces = []string{"eth1"}
 
-			pfMonitorList = &v1alpha1.PFLACPMonitorList{
-				Items: []v1alpha1.PFLACPMonitor{*pfMonitor1, *pfMonitor2},
+			pfMonitorList = &PFLACPMonitorList{
+				Items: []PFLACPMonitor{*pfMonitor1, *pfMonitor2},
 			}
 
 			err := InterfaceUniqueness(pfMonitor1, pfMonitorList)
@@ -96,8 +94,8 @@ var _ = Describe("Validator", func() {
 			pfMonitor2.Spec.NodeSelector = nil
 			pfMonitor2.Spec.Interfaces = []string{"eth0", "eth3"}
 
-			pfMonitorList = &v1alpha1.PFLACPMonitorList{
-				Items: []v1alpha1.PFLACPMonitor{*pfMonitor1, *pfMonitor2},
+			pfMonitorList = &PFLACPMonitorList{
+				Items: []PFLACPMonitor{*pfMonitor1, *pfMonitor2},
 			}
 
 			err := InterfaceUniqueness(pfMonitor1, pfMonitorList)
@@ -111,8 +109,8 @@ var _ = Describe("Validator", func() {
 			pfMonitor2.Spec.NodeSelector = nil
 			pfMonitor2.Spec.Interfaces = []string{"eth1", "eth2"}
 
-			pfMonitorList = &v1alpha1.PFLACPMonitorList{
-				Items: []v1alpha1.PFLACPMonitor{*pfMonitor1, *pfMonitor2},
+			pfMonitorList = &PFLACPMonitorList{
+				Items: []PFLACPMonitor{*pfMonitor1, *pfMonitor2},
 			}
 
 			err := InterfaceUniqueness(pfMonitor1, pfMonitorList)
