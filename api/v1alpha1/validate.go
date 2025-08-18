@@ -1,14 +1,12 @@
-package validation
+package v1alpha1
 
 import (
 	"fmt"
 	"reflect"
-
-	"github.com/openshift/pf-status-relay-operator/api/v1alpha1"
 )
 
 // InterfaceUniqueness validates that interfaces do not overlap for daemon sets that share nodes.
-func InterfaceUniqueness(pfMonitor *v1alpha1.PFLACPMonitor, pfMonitorList *v1alpha1.PFLACPMonitorList) error {
+func InterfaceUniqueness(pfMonitor *PFLACPMonitor, pfMonitorList *PFLACPMonitorList) error {
 	for _, monitor := range pfMonitorList.Items {
 		if pfMonitor.Name == monitor.Name {
 			continue
@@ -28,6 +26,7 @@ func InterfaceUniqueness(pfMonitor *v1alpha1.PFLACPMonitor, pfMonitorList *v1alp
 	return nil
 }
 
+// nodeSelectorOverlaps checks if two node selectors overlap.
 func nodeSelectorOverlaps(nodeSelector1, nodeSelector2 map[string]string) bool {
 	for key, value := range nodeSelector1 {
 		if v, ok := nodeSelector2[key]; ok && reflect.DeepEqual(value, v) {
@@ -37,6 +36,7 @@ func nodeSelectorOverlaps(nodeSelector1, nodeSelector2 map[string]string) bool {
 	return false
 }
 
+// areInterfacesUnique checks if two string slices contain any common elements.
 func areInterfacesUnique(intfs1, intfs2 []string) bool {
 	seen := make(map[string]struct{})
 	for _, item := range intfs2 {
