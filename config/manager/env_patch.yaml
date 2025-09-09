@@ -10,4 +10,4 @@ spec:
         - name: manager
           env:
             - name: PF_STATUS_RELAY_IMAGE
-              value: quay.io/openshift/origin-pf-status-relay:4.20.0
+              value: quay.io/openshift/origin-pf-status-relay:4.21.0
