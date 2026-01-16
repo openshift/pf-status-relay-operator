@@ -1,21 +1,7 @@
+version: "2"
 run:
   timeout: 5m
   allow-parallel-runners: true
-
-issues:
-  # don't skip warning about doc comments
-  # don't exclude the default set of lint
-  exclude-use-default: false
-  # restore some of the defaults
-  # (fill in the rest as needed)
-  exclude-rules:
-    - path: "api/*"
-      linters:
-        - lll
-    - path: "internal/*"
-      linters:
-        - dupl
-        - lll
 linters:
   disable-all: true
   enable:
@@ -24,8 +10,6 @@ linters:
     - copyloopvar
     - goconst
     - gocyclo
-    - gofmt
-    - goimports
     - gosimple
     - govet
     - ineffassign
@@ -38,3 +22,19 @@ linters:
     - unconvert
     - unparam
     - unused
+  exclusions:
+    # don't skip warning about doc comments
+    # don't exclude the default set of lint
+    preset: none
+    rules:
+      - path: "api/*"
+        linters:
+          - lll
+      - path: "internal/*"
+        linters:
+          - dupl
+          - lll
+formatters:
+  enable:
+    - gofmt
+    - goimports
