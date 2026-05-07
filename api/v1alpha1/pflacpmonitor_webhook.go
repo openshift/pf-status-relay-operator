@@ -22,7 +22,6 @@ import (
 	"time"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -40,41 +39,27 @@ type pflacpmonitorValidator struct {
 	Client client.Client
 }
 
-var _ admission.CustomValidator = &pflacpmonitorValidator{}
+var _ admission.Validator[*PFLACPMonitor] = &pflacpmonitorValidator{}
 
 func (r *PFLACPMonitor) SetupWebhookWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewWebhookManagedBy(mgr).
-		For(r).
+	return ctrl.NewWebhookManagedBy(mgr, r).
 		WithValidator(&pflacpmonitorValidator{Client: mgr.GetClient()}).
 		Complete()
 }
 
 // +kubebuilder:webhook:path=/validate-pfstatusrelay-openshift-io-v1alpha1-pflacpmonitor,mutating=false,failurePolicy=fail,sideEffects=None,groups=pfstatusrelay.openshift.io,resources=pflacpmonitors,verbs=create;update,versions=v1alpha1,name=vpflacpmonitor.kb.io,admissionReviewVersions=v1
 
-// ValidateCreate implements admission.CustomValidator so a webhook will be registered for the type
-func (v *pflacpmonitorValidator) ValidateCreate(ctx context.Context, obj runtime.Object) (admission.Warnings, error) {
-	r, ok := obj.(*PFLACPMonitor)
-	if !ok {
-		return nil, apierrors.NewBadRequest("expected a PFLACPMonitor object")
-	}
-
-	pflacpmonitorlog.Info("validating create", "name", r.Name, "namespace", r.Namespace)
-	return v.validate(ctx, r)
+func (v *pflacpmonitorValidator) ValidateCreate(ctx context.Context, obj *PFLACPMonitor) (admission.Warnings, error) {
+	pflacpmonitorlog.Info("validating create", "name", obj.Name, "namespace", obj.Namespace)
+	return v.validate(ctx, obj)
 }
 
-// ValidateUpdate implements admission.CustomValidator so a webhook will be registered for the type
-func (v *pflacpmonitorValidator) ValidateUpdate(ctx context.Context, _, newObj runtime.Object) (admission.Warnings, error) {
-	r, ok := newObj.(*PFLACPMonitor)
-	if !ok {
-		return nil, apierrors.NewBadRequest("expected a PFLACPMonitor object")
-	}
-
-	pflacpmonitorlog.Info("validating update", "name", r.Name, "namespace", r.Namespace)
-	return v.validate(ctx, r)
+func (v *pflacpmonitorValidator) ValidateUpdate(ctx context.Context, _, newObj *PFLACPMonitor) (admission.Warnings, error) {
+	pflacpmonitorlog.Info("validating update", "name", newObj.Name, "namespace", newObj.Namespace)
+	return v.validate(ctx, newObj)
 }
 
-// ValidateDelete implements admission.CustomValidator so a webhook will be registered for the type
-func (v *pflacpmonitorValidator) ValidateDelete(_ context.Context, _ runtime.Object) (admission.Warnings, error) {
+func (v *pflacpmonitorValidator) ValidateDelete(_ context.Context, _ *PFLACPMonitor) (admission.Warnings, error) {
 	return nil, nil
 }
 
