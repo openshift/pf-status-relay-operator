@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: openshift-pf-status-relay-operator
+namePrefix: pf-status-relay-operator-
+
+resources:
+- ../../default
+
+components:
+- ../../components/webhook-certmanager
+- ../../prometheus
