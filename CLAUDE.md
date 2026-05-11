@@ -1,3 +1,13 @@
+# Pre-commit check
+
+Before every commit, run:
+
+```
+make generate && make manifests && go mod tidy && go mod vendor && hack/align-ocp-version.sh
+```
+
+All commands must succeed and produce no file changes. If any files change, stage and include them in the commit.
+
 # Dev workflow
 
 ## Environment
