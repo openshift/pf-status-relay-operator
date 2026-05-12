@@ -1,0 +1,54 @@
+namespace: openshift-pf-status-relay-operator
+namePrefix: pf-status-relay-operator-
+
+resources:
+- ../crd
+- ../rbac
+- ../manager
+- ../webhook
+
+patches:
+- patch: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: webhook-service
+      annotations:
+        service.beta.openshift.io/serving-cert-secret-name: webhook-server-cert
+  target:
+    kind: Service
+    name: webhook-service
+
+- patch: |
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    metadata:
+      name: validating-webhook-configuration
+    webhooks:
+    - name: vpflacpmonitor.kb.io
+      clientConfig:
+        service:
+          name: pf-status-relay-operator-webhook-service
+          namespace: openshift-pf-status-relay-operator
+  target:
+    kind: ValidatingWebhookConfiguration
+    name: validating-webhook-configuration
+
+- patch: |
+    apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    metadata:
+      name: validating-webhook-configuration
+      labels:
+        app.kubernetes.io/name: validatingwebhookconfiguration
+        app.kubernetes.io/instance: validating-webhook-configuration
+        app.kubernetes.io/component: webhook
+        app.kubernetes.io/created-by: pf-status-relay-operator
+        app.kubernetes.io/part-of: pf-status-relay-operator
+        app.kubernetes.io/managed-by: kustomize
+      annotations:
+        service.beta.openshift.io/inject-cabundle: "true"
+  target:
+    kind: ValidatingWebhookConfiguration
+    name: validating-webhook-configuration
+
