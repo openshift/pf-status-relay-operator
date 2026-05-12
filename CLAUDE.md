@@ -28,7 +28,6 @@ Never inline TAG computation with &&.
 
 ## Deployment methods
 
-<<<<<<< HEAD
 ### 1. Raw manifests (OpenShift only)
 
 Uses OpenShift service-CA for webhook certs — does not work on vanilla k8s.
@@ -49,14 +48,13 @@ Install cert-manager and prometheus-operator before deploying.
 
 Undo with `make undeploy OVERLAY=config/overlays/k8s-certmanager-prom && make uninstall`.
 
-### 2. operator-sdk run bundle (OLM-based, works on kind)
+### 2. operator-sdk run bundle (OLM-based)
 
-On kind: load images into kind nodes before running the bundle command.
+This is what CI does. CI builds the bundle image and injects it as `OO_BUNDLE`,
+then runs in namespace `openshift-pf-status-relay-operator` with `--install-mode=OwnNamespace`.
 
-This is what CI does — the e2e workflow calls `operator-sdk run bundle`
-with the bundle image built by ci-operator.
+To replicate locally (raw commands, no make):
 
-=======
 ```
 TAG=<branch>
 IMG=quay.io/karampok/pf-status-relay-operator:$TAG
@@ -64,7 +62,7 @@ BUNDLE_IMG=quay.io/karampok/pf-status-relay-operator-bundle:$TAG
 NS=openshift-pf-status-relay-operator
 
 # Build and push operator image
-podman build -t $IMG .
+podman build -t $IMG . # get image digest
 podman push $IMG
 
 # Patch CSV with correct operator image, regenerate bundle
@@ -86,6 +84,8 @@ oc label ns $NS security.openshift.io/scc.podSecurityLabelSync=true --overwrite
   -n $NS --install-mode=OwnNamespace --kubeconfig $KUBECONFIG
 ```
 
+After deploy, verify the running pod uses the expected image digest — not a stale cached version.
+
 The bundle regeneration modifies `config/manager/kustomization.yaml` and `bundle/` — do not commit those changes.
 
 Undo with:
@@ -94,10 +94,6 @@ Undo with:
 ./bin/operator-sdk-v1.40.0 cleanup pf-status-relay-operator -n $NS --kubeconfig $KUBECONFIG
 oc delete ns $NS
 ```
-
-After deploy, verify the running pod uses the expected image digest — not a stale cached version.
-
-Undo with `operator-sdk cleanup <operator-name> -n <namespace>`.
 
 ### OLM via CatalogSource + Subscription (production)
 
