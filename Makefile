@@ -51,8 +51,6 @@ endif
 OPERATOR_SDK_VERSION ?= v1.40.0
 # Image URL to use all building/pushing image targets
 IMG ?= quay.io/openshift/origin-pf-status-relay-operator:$(VERSION)
-# ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
-ENVTEST_K8S_VERSION = 1.34.1
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -112,12 +110,13 @@ vet: ## Run go vet against code.
 
 .PHONY: test
 test: manifests generate fmt vet envtest ## Run tests.
-	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $$(go list -f '{{if .TestGoFiles}}{{.ImportPath}}{{end}}' ./... | grep -v /e2e) -coverprofile cover.out
+	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
-# Utilize Kind or modify the e2e tests to load the image locally, enabling compatibility with other vendors.
-.PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
-test-e2e:
-	go test ./test/e2e/ -v -ginkgo.v
+GINKGO_ARGS ?=
+
+.PHONY: e2e ## Run TLS compliance e2e tests against a live cluster (requires KUBECONFIG).
+e2e:
+	go test -C e2e -tags e2e -v -timeout 10m . $(GINKGO_ARGS)
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter & yamllint
@@ -211,7 +210,8 @@ GOLANGCI_LINT = $(LOCALBIN)/golangci-lint-$(GOLANGCI_LINT_VERSION)
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v5.3.0
 CONTROLLER_TOOLS_VERSION ?= v0.20.1
-ENVTEST_VERSION ?= release-0.23
+ENVTEST_K8S_VERSION ?= $(shell go list -m -f "{{ .Version }}" k8s.io/api | awk -F'[v.]' '{printf "1.%d", $$3}')
+ENVTEST_VERSION ?= $(shell go list -m -f "{{ .Version }}" sigs.k8s.io/controller-runtime | awk -F'[v.]' '{printf "release-%d.%d", $$2, $$3}')
 GOLANGCI_LINT_VERSION ?= v2.11.4
 
 .PHONY: kustomize
@@ -249,10 +249,9 @@ mv "$$(echo "$(1)" | sed "s/-$(3)$$//")" $(1) ;\
 endef
 
 .PHONY: operator-sdk
-OPERATOR_SDK ?= $(LOCALBIN)/operator-sdk
+OPERATOR_SDK ?= $(LOCALBIN)/operator-sdk-$(OPERATOR_SDK_VERSION)
 operator-sdk: ## Download operator-sdk locally if necessary.
 ifeq (,$(wildcard $(OPERATOR_SDK)))
-ifeq (, $(shell which operator-sdk 2>/dev/null))
 	@{ \
 	set -e ;\
 	mkdir -p $(dir $(OPERATOR_SDK)) ;\
@@ -260,9 +259,6 @@ ifeq (, $(shell which operator-sdk 2>/dev/null))
 	curl -sSLo $(OPERATOR_SDK) https://github.com/operator-framework/operator-sdk/releases/download/$(OPERATOR_SDK_VERSION)/operator-sdk_$${OS}_$${ARCH} ;\
 	chmod +x $(OPERATOR_SDK) ;\
 	}
-else
-OPERATOR_SDK = $(shell which operator-sdk)
-endif
 endif
 
 .PHONY: bundle
