@@ -1,5 +1,6 @@
 resources:
 - manager.yaml
+- webhook_service.yaml
 patches:
 - path: env_patch.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
