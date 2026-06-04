@@ -1,0 +1,70 @@
+inheritance: true  # merge with openshift/coderabbit/.coderabbit.yaml
+
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  auto_review:
+    drafts: false
+
+  path_filters:
+    - "!vendor/**"
+    - "!**/vendor/**"
+    - "!**/zz_generated*"
+
+  path_instructions:
+    - path: "api/v1alpha1/**"
+      instructions: |
+        CRD types and admission webhook. Verify:
+        - +kubebuilder:validation markers are consistent with validate.go logic
+        - Webhook defaulting does not silently overwrite user-set fields
+        - Any new field has a corresponding DeepCopy update (zz_generated.deepcopy.go is regenerated)
+        - Status conditions follow the standard Condition API (type/status/reason/message)
+
+    - path: "internal/controller/**"
+      instructions: |
+        Reconciler. Verify:
+        - Errors wrapped with context before returning
+        - No hardcoded namespace strings; use constants or owner references
+        - Requeue intervals are explicit, not left to default
+        - Resources are fetched with a typed client, not unstructured, unless there is a reason
+
+    - path: "e2e/**"
+      instructions: |
+        Ginkgo e2e suite (separate Go module under e2e/). Verify:
+        - Every It block cleans up created resources in AfterEach or DeferCleanup
+        - Eventually/Consistently calls have explicit timeout and polling interval
+        - Test names are static strings — no dynamic values (pod names, UUIDs, node names)
+
+    - path: "config/**"
+      instructions: |
+        Kustomize manifests and overlays. Verify:
+        - RBAC rules follow least privilege (no wildcard verbs or resources without justification)
+        - Overlay patches do not modify base resources in ways that break other overlays
+        - Resource names match what the controller expects at runtime
+
+    - path: "hack/**"
+      instructions: |
+        Shell scripts. Require: set -euo pipefail at top, all variables quoted, no eval on external input.
+
+  pre_merge_checks:
+    custom_checks:
+      - name: "Operator Image Source"
+        mode: warning
+        instructions: |
+          The operator reads PF_STATUS_RELAY_IMAGE from its own pod env vars to know
+          which DaemonSet image to run. Flag any PR that hardcodes an image reference
+          inside controller or API code instead of reading from this env var.
+
+  tools:
+    golangci-lint:
+      enabled: true
+    shellcheck:
+      enabled: true
+    checkmake:
+      enabled: true
+    markdownlint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    actionlint:
+      enabled: false
