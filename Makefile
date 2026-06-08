@@ -116,7 +116,7 @@ GINKGO_ARGS ?=
 
 .PHONY: e2e ## Run TLS compliance e2e tests against a live cluster (requires KUBECONFIG).
 e2e:
-	go test -C e2e -tags e2e -v -timeout 10m . $(GINKGO_ARGS)
+	go test -C e2e -tags e2e -v -timeout 10m $(GINKGO_ARGS) .
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter & yamllint
