@@ -34,14 +34,12 @@ const metricsURL = `https://pf-status-relay-operator-controller-manager-metrics-
 var _ = Describe("metrics endpoint", Label("e2e", "metrics"), func() {
 
 	It("rejects unauthenticated request", func(ctx context.Context) {
-		// TODO: remove -k once metrics service has serving-cert annotation and kube-rbac-proxy uses OCP service-CA cert
-		logs, err := probe.RunPod(ctx, `curl -k --cacert /etc/cabundle/service-ca.crt `+metricsURL+` 2>&1`)
+		logs, err := probe.RunPod(ctx, `curl --cacert /etc/cabundle/service-ca.crt `+metricsURL+` 2>&1`)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(logs)).To(ContainSubstring("Unauthorized"))
 	})
 
-	// TODO: re-enable once kube-rbac-proxy is removed and metrics serve directly over HTTPS
-	XIt("allows request with valid SA token", func(ctx context.Context) {
+	It("allows request with valid SA token", func(ctx context.Context) {
 		cr := &rbacv1.ClusterRole{
 			ObjectMeta: metav1.ObjectMeta{Name: "e2e-metrics-reader", Labels: e2eLabels},
 			Rules: []rbacv1.PolicyRule{{
@@ -77,8 +75,7 @@ var _ = Describe("metrics endpoint", Label("e2e", "metrics"), func() {
 			}, metav1.CreateOptions{})
 		Expect(err).NotTo(HaveOccurred())
 
-		// TODO: remove -k once metrics service has serving-cert annotation and kube-rbac-proxy uses OCP service-CA cert
-		cmd := `curl -k --cacert /etc/cabundle/service-ca.crt -H "Authorization: Bearer ` + tr.Status.Token + `" ` + metricsURL + ` 2>&1`
+		cmd := `curl --cacert /etc/cabundle/service-ca.crt -H "Authorization: Bearer ` + tr.Status.Token + `" ` + metricsURL + ` 2>&1`
 		logs, err := probe.RunPod(ctx, cmd)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(logs)).To(ContainSubstring("go_goroutines"))
