@@ -17,6 +17,7 @@ limitations under the License.
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"flag"
 	"fmt"
@@ -28,20 +29,25 @@ import (
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
+	configv1 "github.com/openshift/api/config/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/metrics/filters"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
+	openshifttls "github.com/openshift/controller-runtime-common/pkg/tls"
 	pfstatusrelayv1alpha1 "github.com/openshift/pf-status-relay-operator/api/v1alpha1"
 	"github.com/openshift/pf-status-relay-operator/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
+
+//+kubebuilder:rbac:groups=config.openshift.io,resources=apiservers,verbs=get;list;watch
 
 var (
 	scheme   = runtime.NewScheme()
@@ -50,6 +56,7 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+	utilruntime.Must(configv1.Install(scheme))
 
 	utilruntime.Must(pfstatusrelayv1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
@@ -96,10 +103,36 @@ func main() {
 		c.NextProtos = []string{"http/1.1"}
 	}
 
+	// Fetch TLS profile from apiservers.config.openshift.io/cluster before the
+	// manager starts so the initial TLS config can be applied to all servers.
+	ctx, cancel := context.WithCancel(ctrl.SetupSignalHandler())
+	defer cancel()
+
+	cfg := ctrl.GetConfigOrDie()
+
+	tempClient, err := client.New(cfg, client.Options{Scheme: scheme})
+	if err != nil {
+		setupLog.Error(err, "unable to create temporary client")
+		os.Exit(1)
+	}
+
+	// TODO: gate behind API discovery so the operator can fall back to default TLS on vanilla k8s / kind.
+	tlsProfileSpec, err := openshifttls.FetchAPIServerTLSProfile(ctx, tempClient)
+	if err != nil {
+		setupLog.Error(err, "unable to fetch TLS profile from APIServer")
+		os.Exit(1)
+	}
+
+	tlsProfileOpt, unsupported := openshifttls.NewTLSConfigFromProfile(tlsProfileSpec)
+	if len(unsupported) > 0 {
+		setupLog.Info("TLS profile contains ciphers unsupported by Go crypto/tls", "ciphers", unsupported)
+	}
+
 	tlsOpts := []func(*tls.Config){}
 	if !enableHTTP2 {
 		tlsOpts = append(tlsOpts, disableHTTP2)
 	}
+	tlsOpts = append(tlsOpts, tlsProfileOpt)
 
 	webhookServer := webhook.NewServer(webhook.Options{
 		TLSOpts: tlsOpts,
@@ -111,7 +144,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
+	mgr, err := ctrl.NewManager(cfg, ctrl.Options{
 		Scheme: scheme,
 		// Metrics endpoint is enabled in 'config/default/kustomization.yaml'. The Metrics options configure the server.
 		// More info:
@@ -170,6 +203,20 @@ func main() {
 			os.Exit(1)
 		}
 	}
+
+	// Watch apiservers.config.openshift.io/cluster and cancel the context
+	// (triggering a graceful shutdown) when the TLS profile changes. The
+	// deployment controller will restart the pod with the new configuration.
+	if err = (&openshifttls.SecurityProfileWatcher{
+		Client:                mgr.GetClient(),
+		InitialTLSProfileSpec: tlsProfileSpec,
+		OnProfileChange: func(_ context.Context, _, _ configv1.TLSProfileSpec) {
+			cancel()
+		},
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to set up TLS profile watcher")
+		os.Exit(1)
+	}
 	// +kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
@@ -182,7 +229,7 @@ func main() {
 	}
 
 	setupLog.Info("starting manager")
-	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
+	if err := mgr.Start(ctx); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}
