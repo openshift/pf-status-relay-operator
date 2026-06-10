@@ -151,7 +151,6 @@ func (r *PFLACPMonitorReconciler) syncDaemonSet(ctx context.Context, pfMonitor *
 				Spec: corev1.PodSpec{
 					ServiceAccountName: pfStatusRelaySAName,
 					HostNetwork:        true,
-					HostPID:            true,
 					NodeSelector:       pfMonitor.Spec.NodeSelector,
 					Containers: []corev1.Container{
 						{
