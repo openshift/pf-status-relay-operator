@@ -49,50 +49,6 @@ spec:
       clusterPermissions:
       - rules:
         - apiGroups:
-          - apps
-          resources:
-          - daemonsets
-          verbs:
-          - create
-          - delete
-          - get
-          - list
-          - patch
-          - update
-          - watch
-        - apiGroups:
-          - apps
-          resources:
-          - daemonsets/status
-          verbs:
-          - get
-        - apiGroups:
-          - pfstatusrelay.openshift.io
-          resources:
-          - pflacpmonitors
-          verbs:
-          - create
-          - delete
-          - get
-          - list
-          - patch
-          - update
-          - watch
-        - apiGroups:
-          - pfstatusrelay.openshift.io
-          resources:
-          - pflacpmonitors/finalizers
-          verbs:
-          - update
-        - apiGroups:
-          - pfstatusrelay.openshift.io
-          resources:
-          - pflacpmonitors/status
-          verbs:
-          - get
-          - patch
-          - update
-        - apiGroups:
           - authentication.k8s.io
           resources:
           - tokenreviews
@@ -239,6 +195,50 @@ spec:
           verbs:
           - create
           - patch
+        - apiGroups:
+          - apps
+          resources:
+          - daemonsets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - daemonsets/status
+          verbs:
+          - get
+        - apiGroups:
+          - pfstatusrelay.openshift.io
+          resources:
+          - pflacpmonitors
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - pfstatusrelay.openshift.io
+          resources:
+          - pflacpmonitors/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - pfstatusrelay.openshift.io
+          resources:
+          - pflacpmonitors/status
+          verbs:
+          - get
+          - patch
+          - update
         serviceAccountName: pf-status-relay-operator-controller-manager
     strategy: deployment
   installModes:
