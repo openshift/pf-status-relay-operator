@@ -6,8 +6,8 @@ spec:
   - name: pf-status-relay-operator
     from:
       kind: DockerImage
-      name: quay.io/openshift/origin-pf-status-relay-operator:4.22.0
+      name: quay.io/openshift/origin-pf-status-relay-operator:4.23.0
   - name: pf-status-relay
     from:
       kind: DockerImage
-      name: quay.io/openshift/origin-pf-status-relay:4.22.0
+      name: quay.io/openshift/origin-pf-status-relay:4.23.0

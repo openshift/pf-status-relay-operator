@@ -9,4 +9,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: quay.io/openshift/origin-pf-status-relay-operator
-  newTag: 4.22.0
+  newTag: 4.23.0
