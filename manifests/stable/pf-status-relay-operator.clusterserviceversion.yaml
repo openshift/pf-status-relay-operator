@@ -21,7 +21,7 @@ metadata:
     features.operators.openshift.io/disconnected: "true"
     features.operators.openshift.io/fips-compliant: "true"
     features.operators.openshift.io/proxy-aware: "false"
-    features.operators.openshift.io/tls-profiles: "false"
+    features.operators.openshift.io/tls-profiles: "true"
     features.operators.openshift.io/token-auth-aws: "false"
     features.operators.openshift.io/token-auth-azure: "false"
     features.operators.openshift.io/token-auth-gcp: "false"
@@ -60,6 +60,14 @@ spec:
           - subjectaccessreviews
           verbs:
           - create
+        - apiGroups:
+          - config.openshift.io
+          resources:
+          - apiservers
+          verbs:
+          - get
+          - list
+          - watch
         serviceAccountName: pf-status-relay-operator-controller-manager
       deployments:
       - label:
@@ -83,7 +91,9 @@ spec:
               containers:
               - args:
                 - --health-probe-bind-address=:8081
-                - --metrics-bind-address=127.0.0.1:8080
+                - --metrics-bind-address=:8443
+                - --metrics-secure=true
+                - --metrics-cert-dir=/tmp/k8s-metrics-server/serving-certs
                 - --leader-elect
                 command:
                 - /manager
@@ -103,6 +113,9 @@ spec:
                   periodSeconds: 20
                 name: manager
                 ports:
+                - containerPort: 8443
+                  name: https
+                  protocol: TCP
                 - containerPort: 9443
                   name: webhook-server
                   protocol: TCP
@@ -127,41 +140,25 @@ spec:
                   readOnlyRootFilesystem: true
                 volumeMounts:
                 - mountPath: /tmp/k8s-webhook-server/serving-certs
-                  name: cert
+                  name: webhook-cert
                   readOnly: true
-              - args:
-                - --secure-listen-address=0.0.0.0:8443
-                - --upstream=http://127.0.0.1:8080/
-                - --logtostderr=true
-                - --v=0
-                image: quay.io/openshift/origin-kube-rbac-proxy:4.22.0
-                name: kube-rbac-proxy
-                ports:
-                - containerPort: 8443
-                  name: https
-                  protocol: TCP
-                resources:
-                  limits:
-                    cpu: 500m
-                    memory: 128Mi
-                  requests:
-                    cpu: 5m
-                    memory: 64Mi
-                securityContext:
-                  allowPrivilegeEscalation: false
-                  capabilities:
-                    drop:
-                    - ALL
-                  readOnlyRootFilesystem: true
+                - mountPath: /tmp/k8s-metrics-server/serving-certs
+                  name: metrics-cert
+                  readOnly: true
               securityContext:
                 runAsNonRoot: true
               serviceAccountName: pf-status-relay-operator-controller-manager
               terminationGracePeriodSeconds: 10
               volumes:
-              - name: cert
+              - name: webhook-cert
                 secret:
                   defaultMode: 420
                   secretName: webhook-server-cert
+              - name: metrics-cert
+                secret:
+                  defaultMode: 420
+                  optional: true
+                  secretName: metrics-server-cert
       permissions:
       - rules:
         - apiGroups:

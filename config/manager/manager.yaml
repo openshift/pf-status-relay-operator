@@ -62,35 +62,13 @@ spec:
         # seccompProfile:
         #   type: RuntimeDefault
       containers:
-        - name: kube-rbac-proxy
-          image: quay.io/openshift/origin-kube-rbac-proxy:4.22.0
-          args:
-            - "--secure-listen-address=0.0.0.0:8443"
-            - "--upstream=http://127.0.0.1:8080/"
-            - "--logtostderr=true"
-            - "--v=0"
-          ports:
-            - containerPort: 8443
-              name: https
-              protocol: TCP
-          resources:
-            limits:
-              cpu: 500m
-              memory: 128Mi
-            requests:
-              cpu: 5m
-              memory: 64Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - "ALL"
         - command:
             - /manager
           args:
             - --health-probe-bind-address=:8081
-            - --metrics-bind-address=127.0.0.1:8080
+            - --metrics-bind-address=:8443
+            - --metrics-secure=true
+            - --metrics-cert-dir=/tmp/k8s-metrics-server/serving-certs
             - --leader-elect
           image: controller:latest
           name: manager
@@ -100,6 +78,9 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
           ports:
+            - containerPort: 8443
+              name: https
+              protocol: TCP
             - containerPort: 9443
               name: webhook-server
               protocol: TCP
@@ -132,12 +113,20 @@ spec:
               memory: 64Mi
           volumeMounts:
             - mountPath: /tmp/k8s-webhook-server/serving-certs
-              name: cert
+              name: webhook-cert
+              readOnly: true
+            - mountPath: /tmp/k8s-metrics-server/serving-certs
+              name: metrics-cert
               readOnly: true
       volumes:
-        - name: cert
+        - name: webhook-cert
           secret:
             defaultMode: 420
             secretName: webhook-server-cert
+        - name: metrics-cert
+          secret:
+            defaultMode: 420
+            secretName: metrics-server-cert
+            optional: true
       serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10
