@@ -53,6 +53,7 @@ type PFLACPMonitorReconciler struct {
 // +kubebuilder:rbac:groups=pfstatusrelay.openshift.io,resources=pflacpmonitors/finalizers,verbs=update,namespace=system
 // +kubebuilder:rbac:groups=apps,resources=daemonsets,verbs=get;list;watch;create;update;patch;delete,namespace=system
 // +kubebuilder:rbac:groups=apps,resources=daemonsets/status,verbs=get,namespace=system
+// +kubebuilder:rbac:groups=networking.k8s.io,resources=networkpolicies,verbs=create;delete;update;patch,namespace=system
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

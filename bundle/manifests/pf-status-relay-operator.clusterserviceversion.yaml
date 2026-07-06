@@ -211,6 +211,15 @@ spec:
           verbs:
           - get
         - apiGroups:
+          - networking.k8s.io
+          resources:
+          - networkpolicies
+          verbs:
+          - create
+          - delete
+          - patch
+          - update
+        - apiGroups:
           - pfstatusrelay.openshift.io
           resources:
           - pflacpmonitors
