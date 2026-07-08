@@ -157,7 +157,15 @@ func (r *PFLACPMonitorReconciler) syncDaemonSet(ctx context.Context, pfMonitor *
 							Name:  "pf-status-relay",
 							Image: image,
 							SecurityContext: &corev1.SecurityContext{
-								Privileged: func(b bool) *bool { return &b }(true),
+								AllowPrivilegeEscalation: func(b bool) *bool { return &b }(false),
+								ReadOnlyRootFilesystem:   func(b bool) *bool { return &b }(true),
+								Capabilities: &corev1.Capabilities{
+									Drop: []corev1.Capability{"ALL"},
+									Add:  []corev1.Capability{"NET_ADMIN"},
+								},
+								SeccompProfile: &corev1.SeccompProfile{
+									Type: corev1.SeccompProfileTypeRuntimeDefault,
+								},
 							},
 							Env: []corev1.EnvVar{
 								{
