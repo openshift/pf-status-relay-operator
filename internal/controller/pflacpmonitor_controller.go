@@ -28,6 +28,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/utils/ptr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -157,8 +158,8 @@ func (r *PFLACPMonitorReconciler) syncDaemonSet(ctx context.Context, pfMonitor *
 							Name:  "pf-status-relay",
 							Image: image,
 							SecurityContext: &corev1.SecurityContext{
-								AllowPrivilegeEscalation: func(b bool) *bool { return &b }(false),
-								ReadOnlyRootFilesystem:   func(b bool) *bool { return &b }(true),
+								AllowPrivilegeEscalation: ptr.To(false),
+								ReadOnlyRootFilesystem:   ptr.To(true),
 								Capabilities: &corev1.Capabilities{
 									Drop: []corev1.Capability{"ALL"},
 									Add:  []corev1.Capability{"NET_ADMIN"},
