@@ -100,10 +100,6 @@ spec:
                 env:
                 - name: PF_STATUS_RELAY_IMAGE
                   value: quay.io/openshift/origin-pf-status-relay:4.23.0
-                - name: WATCH_NAMESPACE
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.annotations['olm.targetNamespaces']
                 image: quay.io/openshift/origin-pf-status-relay-operator:4.23.0
                 livenessProbe:
                   httpGet:
@@ -245,7 +241,7 @@ spec:
     type: SingleNamespace
   - supported: false
     type: MultiNamespace
-  - supported: false
+  - supported: true
     type: AllNamespaces
   keywords:
   - pf-status-relay
