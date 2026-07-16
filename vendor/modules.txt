@@ -604,8 +604,8 @@ k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset
 k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/scheme
 k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/typed/apiextensions/v1
 k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/typed/apiextensions/v1beta1
-# k8s.io/apimachinery v0.35.4
-## explicit; go 1.25.0
+# k8s.io/apimachinery v0.36.0
+## explicit; go 1.26.0
 k8s.io/apimachinery/pkg/api/equality
 k8s.io/apimachinery/pkg/api/errors
 k8s.io/apimachinery/pkg/api/meta
@@ -648,7 +648,6 @@ k8s.io/apimachinery/pkg/util/diff
 k8s.io/apimachinery/pkg/util/dump
 k8s.io/apimachinery/pkg/util/errors
 k8s.io/apimachinery/pkg/util/framer
-k8s.io/apimachinery/pkg/util/httpstream
 k8s.io/apimachinery/pkg/util/httpstream/wsstream
 k8s.io/apimachinery/pkg/util/intstr
 k8s.io/apimachinery/pkg/util/json
@@ -657,9 +656,7 @@ k8s.io/apimachinery/pkg/util/managedfields/internal
 k8s.io/apimachinery/pkg/util/mergepatch
 k8s.io/apimachinery/pkg/util/naming
 k8s.io/apimachinery/pkg/util/net
-k8s.io/apimachinery/pkg/util/portforward
 k8s.io/apimachinery/pkg/util/rand
-k8s.io/apimachinery/pkg/util/remotecommand
 k8s.io/apimachinery/pkg/util/runtime
 k8s.io/apimachinery/pkg/util/sets
 k8s.io/apimachinery/pkg/util/strategicpatch
@@ -1024,6 +1021,8 @@ k8s.io/klog/v2/internal/dbg
 k8s.io/klog/v2/internal/serialize
 k8s.io/klog/v2/internal/severity
 k8s.io/klog/v2/internal/sloghandler
+k8s.io/klog/v2/internal/verbosity
+k8s.io/klog/v2/textlogger
 # k8s.io/kube-openapi v0.0.0-20260317180543-43fb72c5454a
 ## explicit; go 1.23.0
 k8s.io/kube-openapi/pkg/cached
@@ -1040,10 +1039,16 @@ k8s.io/kube-openapi/pkg/validation/errors
 k8s.io/kube-openapi/pkg/validation/spec
 k8s.io/kube-openapi/pkg/validation/strfmt
 k8s.io/kube-openapi/pkg/validation/strfmt/bson
+# k8s.io/streaming v0.36.0
+## explicit; go 1.26.0
+k8s.io/streaming/pkg/httpstream
+k8s.io/streaming/pkg/httpstream/wsstream
+k8s.io/streaming/pkg/runtime
 # k8s.io/utils v0.0.0-20260210185600-b8788abfbbc2
 ## explicit; go 1.23
 k8s.io/utils/buffer
 k8s.io/utils/clock
+k8s.io/utils/dump
 k8s.io/utils/internal/third_party/forked/golang/golang-lru
 k8s.io/utils/internal/third_party/forked/golang/net
 k8s.io/utils/lru

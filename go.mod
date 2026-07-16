@@ -1,8 +1,6 @@
 module github.com/openshift/pf-status-relay-operator
 
-go 1.25.0
-
-toolchain go1.25.9
+go 1.26.0
 
 require (
 	github.com/onsi/ginkgo/v2 v2.28.1
@@ -10,7 +8,7 @@ require (
 	github.com/openshift/api v0.0.0-20260609121705-d3390bd1109f
 	github.com/openshift/controller-runtime-common v0.0.0-20260428152732-64ee174f5e2e
 	k8s.io/api v0.35.4
-	k8s.io/apimachinery v0.35.4
+	k8s.io/apimachinery v0.36.0
 	k8s.io/client-go v0.35.4
 	sigs.k8s.io/controller-runtime v0.23.3
 )
@@ -97,6 +95,7 @@ require (
 	k8s.io/component-base v0.35.4 // indirect
 	k8s.io/klog/v2 v2.140.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20260317180543-43fb72c5454a // indirect
+	k8s.io/streaming v0.36.0 // indirect
 	k8s.io/utils v0.0.0-20260210185600-b8788abfbbc2 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.34.0 // indirect
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
