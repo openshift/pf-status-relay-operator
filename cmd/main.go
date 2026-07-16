@@ -236,11 +236,9 @@ func main() {
 }
 
 func getWatchNamespace() (string, error) {
-	var watchNamespaceEnvVar = "WATCH_NAMESPACE"
-
-	ns, found := os.LookupEnv(watchNamespaceEnvVar)
-	if !found {
-		return "", fmt.Errorf("%s must be set", watchNamespaceEnvVar)
+	podNS, err := os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace")
+	if err != nil {
+		return "", fmt.Errorf("cannot read pod namespace: %w", err)
 	}
-	return ns, nil
+	return string(podNS), nil
 }
