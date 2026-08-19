@@ -25,10 +25,10 @@ metadata:
     features.operators.openshift.io/token-auth-aws: "false"
     features.operators.openshift.io/token-auth-azure: "false"
     features.operators.openshift.io/token-auth-gcp: "false"
-    olm.skipRange: '>=4.3.0-0 <4.23.0'
+    olm.skipRange: '>=4.3.0-0 <5.1.0'
     operators.operatorframework.io/builder: operator-sdk-v1.40.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v4
-  name: pf-status-relay-operator.v4.23.0
+  name: pf-status-relay-operator.v5.1.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
