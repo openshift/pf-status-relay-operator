@@ -3,14 +3,13 @@ run:
   timeout: 5m
   allow-parallel-runners: true
 linters:
-  disable-all: true
+  default: none
   enable:
     - dupl
     - errcheck
     - copyloopvar
     - goconst
     - gocyclo
-    - gosimple
     - govet
     - ineffassign
     - lll
@@ -18,14 +17,13 @@ linters:
     - nakedret
     - prealloc
     - staticcheck
-    - typecheck
     - unconvert
     - unparam
     - unused
   exclusions:
     # don't skip warning about doc comments
     # don't exclude the default set of lint
-    preset: none
+    presets: []
     rules:
       - path: "api/*"
         linters:
