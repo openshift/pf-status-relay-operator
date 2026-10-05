@@ -6,6 +6,7 @@ resources:
 - ../rbac
 - ../manager
 - ../webhook
+- ../networkpolicies
 
 patches:
 - patch: |
