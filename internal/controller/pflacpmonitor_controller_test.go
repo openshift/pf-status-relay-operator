@@ -114,6 +114,19 @@ var _ = Describe("PFLACPMonitor Controller", func() {
 				Expect(ds.Spec.Template.Spec.Containers[0].Image).To(Equal(dsImage))
 				Expect(ds.Spec.Template.Spec.Containers[0].Env).To(Equal(envVars))
 				Expect(ds.Spec.Template.Spec.NodeSelector).To(Equal(map[string]string{"key": "value"}))
+
+				sc := ds.Spec.Template.Spec.Containers[0].SecurityContext
+				Expect(sc).NotTo(BeNil())
+				Expect(sc.Privileged).To(BeNil())
+				Expect(sc.AllowPrivilegeEscalation).NotTo(BeNil())
+				Expect(*sc.AllowPrivilegeEscalation).To(BeFalse())
+				Expect(sc.ReadOnlyRootFilesystem).NotTo(BeNil())
+				Expect(*sc.ReadOnlyRootFilesystem).To(BeTrue())
+				Expect(sc.Capabilities).NotTo(BeNil())
+				Expect(sc.Capabilities.Drop).To(ConsistOf(corev1.Capability("ALL")))
+				Expect(sc.Capabilities.Add).To(ConsistOf(corev1.Capability("NET_ADMIN")))
+				Expect(sc.SeccompProfile).NotTo(BeNil())
+				Expect(sc.SeccompProfile.Type).To(Equal(corev1.SeccompProfileTypeRuntimeDefault))
 			})
 
 			It("recreates the DeamonSet when this has been deleted", func() {
